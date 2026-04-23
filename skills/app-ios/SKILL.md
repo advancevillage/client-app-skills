@@ -1,3 +1,8 @@
+---
+name: app-ios
+description: "Flutter iOS 平台约束：APNs 推送、版本更新、权限配置、Platform Channel、资源组织与发布构建。"
+---
+
 # app-ios
 
 iOS-specific constraints for Flutter projects.

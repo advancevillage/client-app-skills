@@ -1,3 +1,8 @@
+---
+name: app-api
+description: "App HTTP API 设计约束：RESTful 资源建模、统一响应、分页过滤、错误码、鉴权、幂等与版本兼容。"
+---
+
 # App API Design Skill
 
 Use this skill when designing, reviewing, or implementing App-facing HTTP APIs. The API style must be RESTful, predictable for mobile clients, and consistent with Flutter App Repository-based calling.

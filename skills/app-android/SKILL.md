@@ -1,3 +1,8 @@
+---
+name: app-android
+description: "Flutter Android 平台约束：JPush 推送、版本更新、权限配置、Platform Channel、多渠道包与发布构建。"
+---
+
 # app-android
 
 Android-specific constraints for Flutter projects.

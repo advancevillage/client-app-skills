@@ -1,6 +1,30 @@
 # App Development Design Spec
 
-## Tech Stack
+## 技能优先顺序
+
+- 通用 App 架构先遵守 `skills/app-spec/SKILL.md`
+- App HTTP API 设计遵守 `skills/app-api/SKILL.md`
+- iOS 平台能力遵守 `skills/app-ios/SKILL.md`
+- Android 平台能力遵守 `skills/app-android/SKILL.md`
+- 若本文与 skill 冲突，以更具体的 skill 为准
+
+---
+
+## 核心规则清单
+
+- 分层边界：Widget 只负责 UI，业务流程走 Provider/UseCase，数据访问走 Repository。
+- 数据隔离：API DTO 不直接进入 UI，必须映射为 Entity/ViewModel。
+- 状态明确：区分 server/client/derived/persistent state，禁止重复存储派生状态。
+- 依赖单向：上层依赖抽象，底层实现细节不得反向依赖 UI/业务页面。
+- 错误完整：异步流程必须覆盖 loading/success/empty/error/retry。
+- 写入幂等：提交、支付、删除、点赞等写操作必须防重复和支持安全重试。
+- 扩展集中：支付方式、登录方式、角色、渠道、主题等变化点集中管理。
+- 可观测性：登录、支付、提交、同步、权限失败、接口错误必须可追踪。
+- 简单演进：不过度设计，但不能破坏边界；抽象必须服务于重复、变化或隔离。
+
+---
+
+## 技术栈选型表
 
 | Layer            | Choice                          |
 |------------------|---------------------------------|
@@ -14,7 +38,7 @@
 
 ---
 
-## Directory Structure
+## 目录结构规范
 
 ```
 lib/
@@ -54,7 +78,7 @@ modules/login/
 
 ---
 
-## Naming Conventions
+## 命名约定规范
 
 | 目标               | 规范                        | 示例                         |
 |--------------------|-----------------------------|------------------------------|
@@ -74,7 +98,7 @@ modules/login/
 
 ---
 
-## Code Quality
+## 代码质量约束
 
 - Single file: max **800 lines**
 - Single method/function: max **80 lines**
@@ -85,7 +109,7 @@ modules/login/
 
 ---
 
-## Module Structure (Red Frame)
+## 模块组织规范
 
 Organize by **business function**, not by file type.
 
@@ -110,7 +134,7 @@ pages/
 
 ---
 
-## Class / Component Structure (Green Frame)
+## 组件结构规范
 
 Group methods by function block in this order:
 
@@ -153,7 +177,7 @@ Group methods by function block in this order:
 
 ---
 
-## State Management (Riverpod)
+## 状态管理规范
 
 - 所有 Provider 定义在模块 `presentation/xxx_provider.dart`
 - 使用 AsyncNotifier 管理异步状态，UI 通过 AsyncValue 处理三态：
@@ -167,7 +191,7 @@ Group methods by function block in this order:
 
 ---
 
-## Error Handling
+## 错误处理规范
 
 统一错误类型：
 
@@ -188,7 +212,7 @@ class AppError {
 
 ---
 
-## HTTP Layer (`common/http/`)
+## 网络请求规范
 
 - 全局单例 Dio，通过 Riverpod Provider 注入（禁止模块内 `new Dio()`）
 - Request 拦截器：注入 token → 添加公共 headers（appId、channelId）
@@ -201,7 +225,7 @@ class AppError {
 
 ---
 
-## Code Generation
+## 代码生成规范
 
 - 实体/DTO：使用 `freezed` + `json_serializable`
 - Provider：使用 `@riverpod` 注解（riverpod_generator）
@@ -213,7 +237,7 @@ class AppError {
 
 ---
 
-## Linting (`analysis_options.yaml`)
+## 静态检查规范
 
 继承 `flutter_lints`，额外启用：
 
@@ -228,7 +252,7 @@ linter:
 
 ---
 
-## Analytics (`common/analytics/`)
+## 埋点分析规范
 
 ```dart
 Analytics.init(appId, userId, channelId);       // 应用启动时调用
@@ -256,7 +280,7 @@ Analytics.sendPageEnd(eventId, attr);           // 页面离开
 
 ---
 
-## Permissions (`common/permissions/`)
+## 权限处理规范
 
 使用 `permission_handler` 包，统一封装在 `common/permissions/`。
 
@@ -270,18 +294,18 @@ Permissions to cover: camera, microphone, location, storage, network.
 
 ---
 
-## Required App Features
+## 必备功能清单
 
 | Feature | Priority | Notes |
 |---------|----------|-------|
 | Version check on launch | High | API call on splash, dialog to update |
-| Push notifications | High | See platform skills |
+| Push notifications | High | See `skills/app-ios/SKILL.md` and `skills/app-android/SKILL.md` |
 | Splash version label | Medium | Display current app version |
 | Splash ad | Low | Configurable via API |
 
 ---
 
-## Test Coverage Requirements
+## 测试覆盖清单
 
 Every feature must cover:
 
@@ -294,7 +318,7 @@ Every feature must cover:
 
 ---
 
-## Branch Strategy
+## 分支管理规范
 
 ```
 master          production only, never commit directly
