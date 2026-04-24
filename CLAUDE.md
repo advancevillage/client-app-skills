@@ -16,6 +16,7 @@
 - 数据隔离：API DTO 不直接进入 UI，必须映射为 Entity/ViewModel。
 - 状态明确：区分 server/client/derived/persistent state，禁止重复存储派生状态。
 - 依赖单向：上层依赖抽象，底层实现细节不得反向依赖 UI/业务页面。
+- 动画边界：复杂互动动画使用 Rive；Rive 仅限 `presentation/` 层使用。
 - 错误完整：异步流程必须覆盖 loading/success/empty/error/retry。
 - 写入幂等：提交、支付、删除、点赞等写操作必须防重复和支持安全重试。
 - 扩展集中：支付方式、登录方式、角色、渠道、主题等变化点集中管理。
@@ -35,6 +36,7 @@
 | 路由              | GoRouter                        |
 | 不可变模型        | freezed + json_serializable     |
 | 权限              | permission_handler              |
+| 互动动画          | Rive（rive）                    |
 
 ---
 
@@ -74,6 +76,8 @@ modules/login/
 **Rules:**
 - 每个 `modules/xxx/` 包含：`presentation/`、`domain/`、`data/` 三层
 - 资源文件（图片）放模块内 `assets/` 目录
+- 模块内 Rive 资源放 `assets/rive/`
+- 跨模块共享 Rive 资源放 `common/assets/rive/`
 - `common/widgets/` 必须是纯 UI — 无 API 调用，无业务 provider 依赖
 
 ---
@@ -173,6 +177,7 @@ Group methods by function block in this order:
 
 - 生命周期方法按**实际执行顺序**排列
 - 事件处理方法统一以 `handle` 前缀命名
+- Rive 初始化放 `onInit`，复杂控制逻辑不写在 `build()` 中
 - build 方法保持精简 — Widget 树超过 ~50 行则提取子 Widget
 
 ---
@@ -187,7 +192,20 @@ Group methods by function block in this order:
 - Provider 作用域：模块内 provider 不得被其他模块直接引用
   → 跨模块共享状态放 `common/providers/`
 - 禁止在 Widget 内直接调用 API — 必须经由 Notifier 方法
+- Rive 动画状态由 Widget 或 Provider/Notifier 驱动，禁止传入 `domain/data`
 - 使用 `@riverpod` 注解生成 provider，禁止手动 new Provider
+
+---
+
+## Rive 动画接入规范
+
+- 统一使用官方 `rive` 包
+- 简单过渡动画优先 Flutter 原生动画；复杂互动动画再使用 Rive
+- 优先使用 `RiveAnimation.asset(...)` 加载 `.riv` 文件
+- 互动场景优先使用 State Machine
+- `.riv` 文件名使用 `snake_case`
+- Widget 负责展示与事件绑定；Provider/Notifier 负责动画状态
+- 禁止 `domain/`、`data/`、Repository、DTO、Entity 依赖 Rive 类型
 
 ---
 
@@ -315,6 +333,7 @@ Every feature must cover:
 - **Background/foreground**: repeated switching, long background → resume
 - **Input**: max length, overflow display (ellipsis), special characters
 - **Share**: all platforms, link tap, QR code scan
+- **Rive**: asset missing fallback, state machine trigger, repeated enter/exit, background resume
 
 ---
 
