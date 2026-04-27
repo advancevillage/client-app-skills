@@ -16,4 +16,7 @@ https://lottiefiles.com/preview
 
 RiveMCP: https://rivemcp.stunning.gg
     $10/mo
+
+Rive 中文文档:
+https://www.rive.org.cn/docs/guide/introduction
 ```
