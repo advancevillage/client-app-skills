@@ -4,6 +4,7 @@
 
 - 通用 App 架构先遵守 `skills/app-spec/SKILL.md`
 - App HTTP API 设计遵守 `skills/app-api/SKILL.md`
+- App Rive 动画设计与接入遵守 `skills/app-rive/SKILL.md`
 - iOS 平台能力遵守 `skills/app-ios/SKILL.md`
 - Android 平台能力遵守 `skills/app-android/SKILL.md`
 - 若本文与 skill 冲突，以更具体的 skill 为准
@@ -206,6 +207,55 @@ Group methods by function block in this order:
 - `.riv` 文件名使用 `snake_case`
 - Widget 负责展示与事件绑定；Provider/Notifier 负责动画状态
 - 禁止 `domain/`、`data/`、Repository、DTO、Entity 依赖 Rive 类型
+
+---
+
+## Pencil 设计稿图片组件转 Rive 场景
+
+- 当从 UI/UX 设计稿（Pencil）查询到某个组件本质是**图片**时，先不要默认按静态图片落地。
+- 必须先询问用户：
+  `这个图片组件是否需要生成/制作为 Rive 动画交互？`
+- 若用户选择 **否**：
+  - 按普通静态资源处理，落入模块 `assets/` 或共享资源目录
+  - 只输出图片切图、适配、占位、加载与缓存相关实现建议
+- 若用户选择 **是**：
+  - 先说明该图片是否适合转为 Rive：
+    - 适合：图标、插画、按钮反馈、状态切换、局部可拆分的视觉元素
+    - 不适合：复杂位图照片、强纹理图片、无法分层的单张合成图
+  - 然后输出一份**面向 Rive 新手**的操作指导，要求：
+    - 使用一步一步的方式说明如何在 Rive Editor 中操作
+    - 默认用户不了解 State Machine、Timeline、Trigger、Input
+    - 明确区分“素材准备”“导入与分层”“动画制作”“状态机连线”“导出给 Flutter”
+  - 最后给出执行计划，至少包含：
+    1. 确认该图片是否适合做 Rive 动画
+    2. 拆分图片图层或改为可分层矢量素材（SVG/AI）
+    3. 在 Rive Editor 中导入素材并整理命名
+    4. 创建 Artboard 与关键动画（进入、悬停、点击、成功/失败等）
+    5. 创建 State Machine 与 Inputs（Boolean/Trigger/Number）
+    6. 预览交互逻辑并修正节奏、锚点、循环方式
+    7. 导出 `.riv` 文件并定义 Flutter 接入方式
+
+**Rive Editor 新手指导输出模板：**
+
+1. 目标说明：先告诉用户这次要做什么动画，交互触发条件是什么。
+2. 素材准备：说明需要把原图拆成哪些层，哪些元素必须独立。
+3. 新建文件：指导用户在 Rive Editor 中创建文件、Artboard、命名尺寸。
+4. 导入素材：逐步说明如何导入 SVG/图片层，并检查锚点与层级。
+5. 建立动画：指导用户创建 Timeline，逐帧设置位移、缩放、透明度、旋转。
+6. 建立交互：指导用户创建 State Machine、添加 Trigger/Boolean/Number Inputs、连接状态。
+7. 预览验证：指导用户点击播放，检查首尾衔接、循环、点击反馈是否正确。
+8. 导出交付：说明如何导出 `.riv`，以及 Flutter 侧需要绑定哪些 State Machine/Input。
+
+**回答要求：**
+
+- 不要只给概念，必须给用户可执行的 Rive Editor 操作步骤
+- 遇到图片不适合直接转 Rive 时，要明确告知原因，并建议改为：
+  - 静态图片 + Flutter 原生动效
+  - 重新绘制为矢量分层素材后再导入 Rive
+- 如果用户明确表示“我是 Rive 新手”或“你一步一步带我做”，则回答中必须包含：
+  - 每一步要点击什么
+  - 每一步完成后应该看到什么结果
+  - 下一步之前需要检查什么
 
 ---
 

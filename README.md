@@ -20,3 +20,11 @@ RiveMCP: https://rivemcp.stunning.gg
 Rive 中文文档:
 https://www.rive.org.cn/docs/guide/introduction
 ```
+
+### App Rive Skill
+
+- 新增 `skills/app-rive/SKILL.md`
+- 用于：
+  - 判断 Pencil 设计稿中的图片组件是否适合转为 Rive
+  - 给 Rive 新手输出一步一步的 Rive Editor 操作指导
+  - 约束 `.riv` 资源在 Flutter App 中的接入边界
