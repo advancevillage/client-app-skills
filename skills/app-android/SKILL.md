@@ -47,10 +47,10 @@ Flutter 文件内按以下顺序组织（与 CLAUDE.md 通用规范一致）：
 1. import（`dart:` → `package:` → 相对路径，各组空一行）
 2. 文件顶层常量
 3. Widget 类
-   - 私有 State 变量（`_xxx`）
+   - State 变量（`lowerCamelCase`）
    - `initState()` / `dispose()`
-   - `handle*` 事件方法
-   - `_buildXxx` 辅助构建方法
+   - `handleXxx` 事件方法
+   - `buildXxx` 辅助构建方法
    - `build()`
 
 **Platform Channel（仅需调用原生功能时使用）：**

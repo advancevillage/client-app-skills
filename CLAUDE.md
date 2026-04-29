@@ -85,21 +85,31 @@ modules/login/
 
 ## 命名约定规范
 
-| 目标               | 规范                        | 示例                         |
-|--------------------|-----------------------------|------------------------------|
-| Widget / Class     | PascalCase                  | `LoginPage`, `UserCard`      |
-| 文件名              | snake_case                  | `login_page.dart`            |
-| 函数 / 变量         | camelCase                   | `getUserInfo`, `isLoading`   |
-| 私有成员            | `_` 前缀                    | `_controller`, `_timer`      |
-| 常量               | lowerCamelCase              | `maxRetryCount`              |
-| Provider           | camelCase + Provider 后缀   | `loginProvider`              |
-| Repository 接口     | PascalCase + Repository     | `LoginRepository`            |
-| DTO                | PascalCase + Dto            | `LoginDto`                   |
-| 图片文件            | `module_feature_desc.png`   | `uc_user_icon.png`           |
-| CSS class          | 不适用（Flutter 无 CSS）    | —                            |
+| 目标               | 规范                              | 示例                              |
+|--------------------|-----------------------------------|-----------------------------------|
+| Widget / Class     | PascalCase                        | `LoginPage`, `UserCard`           |
+| 文件名              | snake_case                        | `login_page.dart`                 |
+| 变量                | lowerCamelCase                    | `userProfile`, `requestBody`      |
+| 布尔变量            | `is` / `has` / `can` / `should` 开头 | `isLoading`, `hasPermission`      |
+| 函数 / 方法         | lowerCamelCase，动词开头           | `loadUser`, `submitOrder`         |
+| 事件处理函数        | `handleXxx`                       | `handleSubmit`, `handleRetry`     |
+| UI 辅助构建方法     | `buildXxx`                        | `buildHeader`, `buildLoadingView` |
+| 数据转换方法        | `mapXxx` / `toXxx`                | `mapDtoToEntity`, `toViewModel`   |
+| 校验方法            | `validateXxx` / `checkXxx`        | `validateInput`, `checkLoginStatus` |
+| 常量               | lowerCamelCase                    | `maxRetryCount`                   |
+| Provider           | camelCase + Provider 后缀         | `loginProvider`                   |
+| Repository 接口     | PascalCase + Repository           | `LoginRepository`                 |
+| DTO                | PascalCase + Dto                  | `LoginDto`                        |
+| 图片文件            | `module_feature_desc.png`         | `uc_user_icon.png`                |
+| CSS class          | 不适用（Flutter 无 CSS）          | —                                 |
 
-- 使用完整单词；通用缩写除外（msg, init, img, nav, btn, bg）
+- 变量、成员变量、局部变量、内部对象变量、私有成员、私有方法统一使用 `lowerCamelCase`
+- 变量命名使用名词、名词短语或状态描述；函数命名使用动词或动作短语
+- 禁止使用 `_` 作为变量名或方法名前缀区分私有作用域
+- 禁止使用 `fn`、`obj`、`m`、`s` 等类型或作用域前缀
 - 禁止单字母变量（循环索引除外）
+- 使用完整单词；通用缩写除外（msg, init, img, nav, btn, bg）
+- 避免无意义命名，如 `data`、`item`、`temp`、`value`、`obj`
 
 ---
 
@@ -151,14 +161,14 @@ Group methods by function block in this order:
 
 **ConsumerStatefulWidget（Riverpod）:**
 ```
-1. 私有 State 变量（_xxx）
+1. State 变量（lowerCamelCase）
 2. initState()
 3. didChangeDependencies()
 4. didUpdateWidget()
 5. dispose()
-6. 事件处理方法（handle*）
+6. 事件处理方法（handleXxx）
 7. 异步/API 调用（通过 ref.read(provider.notifier).method()）
-8. 辅助 build 方法（_buildXxx）
+8. 辅助 build 方法（buildXxx）
 9. build()
 ```
 
@@ -166,14 +176,14 @@ Group methods by function block in this order:
 ```
 1. build()          // 初始数据加载
 2. 业务方法         // 返回 AsyncValue 或抛出异常
-3. 私有辅助方法
+3. 辅助方法（lowerCamelCase，按语义命名）
 ```
 
 **Repository 实现:**
 ```
 1. 构造函数 + 依赖注入（Dio、本地存储）
 2. 接口方法实现
-3. 私有数据映射方法（DTO → Entity）
+3. 数据映射与辅助方法（lowerCamelCase，例如 `mapDtoToEntity`）
 ```
 
 - 生命周期方法按**实际执行顺序**排列
