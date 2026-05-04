@@ -88,6 +88,8 @@ GET https://api.example.com/v1/orders?page=1&page_size=20
 | 复数集合 | 集合资源使用复数名词。 |
 | 方法表达 | 操作类型由 HTTP Method 表达。 |
 | 字段统一 | 路径和参数字段默认使用 `snake_case`。 |
+| 原子命名 | 资源名是最小业务名词，不带场景/角色/消费方前缀。 |
+| 禁用别名 | 资源详情用 `:id`，禁止 `me / self / current` 等魔法别名。 |
 
 ### 允许
 
@@ -97,6 +99,9 @@ GET https://api.example.com/v1/orders?page=1&page_size=20
 /products
 /messages
 /payments
+/codes
+/versions
+/users/:userId
 ```
 
 ### 拒绝
@@ -107,16 +112,19 @@ GET https://api.example.com/v1/orders?page=1&page_size=20
 /updateProduct
 /deleteMessage
 /payOrder
+/sms-verification-codes
+/app-versions
+/users/me
 ```
 
 ### 示例
 
 ```http
 GET /v1/users
-GET /v1/users/123
+GET /v1/users/:userId
 POST /v1/orders
-PATCH /v1/orders/456
-DELETE /v1/messages/789
+PATCH /v1/orders/:orderId
+DELETE /v1/messages/:messageId
 ```
 
 ## 四、资源关系规范
@@ -218,10 +226,10 @@ DELETE /v1/orders/456
 动作型业务转资源：
 
 ```http
-POST /v1/orders/456/cancelations
-POST /v1/orders/456/payments
-POST /v1/sms-verification-codes
-POST /v1/messages/789/read-receipts
+POST /v1/orders/:orderId/cancelations
+POST /v1/orders/:orderId/payments
+POST /v1/codes
+POST /v1/messages/:messageId/read-receipts
 ```
 
 ## 六、分页查询规范
